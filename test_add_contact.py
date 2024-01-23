@@ -1,6 +1,14 @@
 # -*- coding: utf-8 -*-
 from selenium.webdriver.firefox.webdriver import WebDriver
+from selenium.webdriver.support.select import Select
 import unittest
+
+def is_alert_present(wd):
+    try:
+        wd.switch_to_alert().text
+        return True
+    except:
+        return False
 
 class TestAddContact(unittest.TestCase):
     def setUp(self):
@@ -12,14 +20,81 @@ class TestAddContact(unittest.TestCase):
     
     def test_add_contact(self):
         wd = self.wd
-        wd.get("http://localhost/addressbook/")
-        wd.find_element_by_name("user").click()
-        wd.find_element_by_name("user").clear()
-        wd.find_element_by_name("user").send_keys("admin")
-        wd.find_element_by_name("pass").clear()
-        wd.find_element_by_name("pass").send_keys("secret")
-        wd.find_element_by_xpath("//input[@value='Login']").click()
-        wd.find_element_by_link_text("add new").click()
+        self.open_home_page(wd)
+        self.log_in(wd)
+        self.open_contact_page(wd)
+        self.fill_fio(wd)
+        self.company_name(wd)
+        self.contact_information(wd)
+        self.specify_the_birthday(wd)
+        self.specify_the_anniversary(wd)
+        self.selection_group(wd)
+        self.log_out(wd)
+
+    def log_out(self, wd):
+        wd.find_element_by_link_text("Logout").click()
+
+    def selection_group(self, wd):
+        wd.find_element_by_name("new_group").click()
+        Select(wd.find_element_by_name("new_group")).select_by_visible_text("dfgh")
+        wd.find_element_by_xpath("//div[@id='content']/form/select[5]/option[3]").click()
+        wd.find_element_by_xpath("//div[@id='content']/form/input[20]").click()
+
+    def specify_the_anniversary(self, wd):
+        # select a day
+        wd.find_element_by_name("aday").click()
+        Select(wd.find_element_by_name("aday")).select_by_visible_text("1")
+        wd.find_element_by_xpath("//div[@id='content']/form/select[3]/option[3]").click()
+        # select a month
+        wd.find_element_by_name("amonth").click()
+        Select(wd.find_element_by_name("amonth")).select_by_visible_text("January")
+        # fill a year
+        wd.find_element_by_xpath("//div[@id='content']/form/select[4]/option[2]").click()
+        wd.find_element_by_name("ayear").click()
+        wd.find_element_by_name("ayear").clear()
+        wd.find_element_by_name("ayear").send_keys("2000")
+
+    def specify_the_birthday(self, wd):
+        wd.find_element_by_name("bday").click()
+        Select(wd.find_element_by_name("bday")).select_by_visible_text("1")
+        wd.find_element_by_xpath("//option[@value='1']").click()
+        wd.find_element_by_name("bmonth").click()
+        Select(wd.find_element_by_name("bmonth")).select_by_visible_text("October")
+        wd.find_element_by_xpath("//option[@value='October']").click()
+        wd.find_element_by_name("byear").click()
+        wd.find_element_by_name("byear").clear()
+        wd.find_element_by_name("byear").send_keys("1990")
+
+    def contact_information(self, wd):
+        # fill address
+        wd.find_element_by_name("address").clear()
+        wd.find_element_by_name("address").send_keys("Moscow City")
+        # fill phone numbers
+        wd.find_element_by_name("home").clear()
+        wd.find_element_by_name("home").send_keys("84951231234")
+        wd.find_element_by_name("mobile").clear()
+        wd.find_element_by_name("mobile").send_keys("89997776655")
+        wd.find_element_by_name("work").clear()
+        wd.find_element_by_name("work").send_keys("QA Engineer")
+        wd.find_element_by_name("fax").clear()
+        wd.find_element_by_name("fax").send_keys("8495")
+        # fill e-mail
+        wd.find_element_by_name("email").clear()
+        wd.find_element_by_name("email").send_keys("pochta1@ru.ru")
+        wd.find_element_by_name("email2").clear()
+        wd.find_element_by_name("email2").send_keys("pochta2@ru.ru")
+        wd.find_element_by_name("email3").clear()
+        wd.find_element_by_name("email3").send_keys("pochta3@ru.ru")
+        # fill homepage
+        wd.find_element_by_name("homepage").clear()
+        wd.find_element_by_name("homepage").send_keys("wwwwwww")
+
+    def company_name(self, wd):
+        wd.find_element_by_name("company").click()
+        wd.find_element_by_name("company").clear()
+        wd.find_element_by_name("company").send_keys("OOO Horns and Hooves")
+
+    def fill_fio(self, wd):
         wd.find_element_by_name("theform").click()
         wd.find_element_by_name("firstname").click()
         wd.find_element_by_name("firstname").clear()
@@ -32,75 +107,20 @@ class TestAddContact(unittest.TestCase):
         wd.find_element_by_name("nickname").click()
         wd.find_element_by_name("nickname").clear()
         wd.find_element_by_name("nickname").send_keys("Yesman")
-        wd.find_element_by_name("title").click()
-        wd.find_element_by_name("title").clear()
-        wd.find_element_by_name("title").send_keys("Title123")
-        wd.find_element_by_name("company").click()
-        wd.find_element_by_name("company").clear()
-        wd.find_element_by_name("company").send_keys("OOO Horns and Hooves")
-        wd.find_element_by_name("address").clear()
-        wd.find_element_by_name("address").send_keys("Moscow City")
-        wd.find_element_by_name("home").clear()
-        wd.find_element_by_name("home").send_keys("84951231234")
-        wd.find_element_by_name("mobile").clear()
-        wd.find_element_by_name("mobile").send_keys("89997776655")
-        wd.find_element_by_name("work").clear()
-        wd.find_element_by_name("work").send_keys("QA Engineer")
-        wd.find_element_by_name("fax").clear()
-        wd.find_element_by_name("fax").send_keys("8495")
-        wd.find_element_by_name("email").clear()
-        wd.find_element_by_name("email").send_keys("pochta1@ru.ru")
-        wd.find_element_by_name("email2").clear()
-        wd.find_element_by_name("email2").send_keys("pochta2@ru.ru")
-        wd.find_element_by_name("email3").clear()
-        wd.find_element_by_name("email3").send_keys("pochta3@ru.ru")
-        wd.find_element_by_name("homepage").clear()
-        wd.find_element_by_name("homepage").send_keys("wwwwwww")
-        wd.find_element_by_name("bday").click()
-        Select(wd.find_element_by_name("bday")).select_by_visible_text("1")
-        wd.find_element_by_xpath("//option[@value='1']").click()
-        wd.find_element_by_name("bmonth").click()
-        Select(wd.find_element_by_name("bmonth")).select_by_visible_text("October")
-        wd.find_element_by_xpath("//option[@value='October']").click()
-        wd.find_element_by_name("byear").click()
-        wd.find_element_by_name("byear").clear()
-        wd.find_element_by_name("byear").send_keys("1990")
-        wd.find_element_by_name("aday").click()
-        Select(wd.find_element_by_name("aday")).select_by_visible_text("1")
-        wd.find_element_by_xpath("//div[@id='content']/form/select[3]/option[3]").click()
-        wd.find_element_by_name("amonth").click()
-        Select(wd.find_element_by_name("amonth")).select_by_visible_text("January")
-        wd.find_element_by_xpath("//div[@id='content']/form/select[4]/option[2]").click()
-        wd.find_element_by_name("ayear").click()
-        wd.find_element_by_name("ayear").clear()
-        wd.find_element_by_name("ayear").send_keys("2000")
-        wd.find_element_by_name("new_group").click()
-        Select(wd.find_element_by_name("new_group")).select_by_visible_text("dfgh")
-        wd.find_element_by_xpath("//div[@id='content']/form/select[5]/option[3]").click()
-        wd.find_element_by_xpath("//div[@id='content']/form/input[20]").click()
-        wd.find_element_by_link_text("Logout").click()
-    
-    def is_element_present(self, how, what):
-        try: self.wd.find_element(by=how, value=what)
-        except NoSuchElementException as e: return False
-        return True
-    
-    def is_alert_present(self):
-        try: self.wd.switch_to_alert()
-        except NoAlertPresentException as e: return False
-        return True
-    
-    def close_alert_and_get_its_text(self):
-        try:
-            alert = self.wd.switch_to_alert()
-            alert_text = alert.text
-            if self.accept_next_alert:
-                alert.accept()
-            else:
-                alert.dismiss()
-            return alert_text
-        finally: self.accept_next_alert = True
-    
+
+    def open_contact_page(self, wd):
+        wd.find_element_by_link_text("add new").click()
+
+    def log_in(self, wd):
+        wd.find_element_by_name("user").click()
+        wd.find_element_by_name("user").clear()
+        wd.find_element_by_name("user").send_keys("admin")
+        wd.find_element_by_name("pass").clear()
+        wd.find_element_by_name("pass").send_keys("secret")
+        wd.find_element_by_xpath("//input[@value='Login']").click()
+    def open_home_page(self, wd):
+        wd.get("http://localhost/addressbook/")
+
     def tearDown(self):
         self.wd.quit()
         self.assertEqual([], self.verificationErrors)
