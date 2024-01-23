@@ -118,6 +118,7 @@ class TestAddContact(unittest.TestCase):
         wd.find_element_by_name("pass").clear()
         wd.find_element_by_name("pass").send_keys("secret")
         wd.find_element_by_xpath("//input[@value='Login']").click()
+
     def open_home_page(self, wd):
         wd.get("http://localhost/addressbook/")
 
